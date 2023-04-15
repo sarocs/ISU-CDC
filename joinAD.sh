@@ -13,6 +13,7 @@ apt upgrade -y
 apt install -y realmd ntp
 sed -i "/pool 0.ubuntu.pool.ntp.org iburst/i server ad.team$team_num.isucdc.com" /etc/ntp.conf
 realm discover team$team_num.isucdc.com
+realm join team$team_num.isucdc.com
 apt install -y krb5-user
 # enter TEAM5.ISUCDC.COM
 kinit administrator
