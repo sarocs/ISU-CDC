@@ -14,14 +14,14 @@ apt upgrade -y
 apt install -y realmd ntp
 sed -i "/pool 0.ubuntu.pool.ntp.org iburst/i server ad.team$team_num.isucdc.com" /etc/ntp.conf
 realm discover team$team_num.isucdc.com
-sleep 10
+sleep 5
 #echo "This will fail but installs the necessary packages"
 #realm join team$team_num.isucdc.com
 apt install -y krb5-user
 # enter TEAM5.ISUCDC.COM
 kinit administrator
 realm join team$team_num.isucdc.com
-sleep(10)
+sleep 5
 sed -i 's/use_fully_qualified_names = True/use_fully_qualified_names = False/' /etc/sssd/sssd.conf
 service sssd --full-restart
 sed -i "/pam_unix.so/a session required\tpam_mkhomedir.so skel=/etc/skel/ umask=0022" /etc/pam.d/common-session
