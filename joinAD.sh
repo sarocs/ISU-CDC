@@ -20,6 +20,7 @@ apt install -y krb5-user
 # enter TEAM5.ISUCDC.COM
 kinit administrator
 realm join team$team_num.isucdc.com
+sleep(10)
 sed -i 's/use_fully_qualified_names = True/use_fully_qualified_names = False/' /etc/sssd/sssd.conf
 service sssd --full-restart
 sed -i "/pam_unix.so/a session required\tpam_mkhomedir.so skel=/etc/skel/ umask=0022" /etc/pam.d/common-session
