@@ -8,6 +8,7 @@ do
 done
 
 hostnamectl set-hostname $box_name.team$team_num.isucdc.com
+sed -i "/127.0.1.1 $box_name/a $ad_ip ad.team$team_num.isucdc.com ad" /etc/hosts
 apt update
 apt upgrade -y
 apt install -y realmd ntp
