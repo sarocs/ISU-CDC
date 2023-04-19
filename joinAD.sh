@@ -15,11 +15,11 @@ apt install -y realmd ntp
 sed -i "/pool 0.ubuntu.pool.ntp.org iburst/i server ad.team$team_num.isucdc.com" /etc/ntp.conf
 realm discover team$team_num.isucdc.com
 sleep 5
-#echo "This will fail but installs the necessary packages"
-#realm join team$team_num.isucdc.com
-apt install -y krb5-user
+# all but krb5-user for Ubuntu version <20
+apt install -y krb5-user sssd-tools sssd libnss-sss libpam-sss adcli samba-common-bin
 # enter TEAM5.ISUCDC.COM
 kinit administrator
+# --install=/ is for Ubuntu version <20
 realm join team$team_num.isucdc.com --install=/
 sleep 5
 sed -i 's/use_fully_qualified_names = True/use_fully_qualified_names = False/' /etc/sssd/sssd.conf
