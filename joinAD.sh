@@ -1,8 +1,7 @@
 for ARGUMENT in "$@"
 do
     KEY=$(echo $ARGUMENT | cut -f1 -d=)
-    KEY_LENGTH=${#KEY}
-    VALUE="${ARGUMENT:$KEY_LENGTH+1}"
+    VALUE=$(echo $ARGUMENT | cut -f2 -d=)
 
     export "$KEY"="$VALUE"
 done
