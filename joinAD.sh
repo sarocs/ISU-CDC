@@ -1,11 +1,6 @@
-for ARGUMENT in "$@"
-do
-    KEY=$(echo $ARGUMENT | cut -f1 -d=)
-    KEY_LENGTH=${#KEY}
-    VALUE="${ARGUMENT:$KEY_LENGTH+1}"
-
-    export "$KEY"="$VALUE"
-done
+read -p "Box name: " box_name
+read -p "AD server IP: " ad_ip
+read -p "Team number: " team_num
 
 hostnamectl set-hostname $box_name.team$team_num.isucdc.com
 # Ubuntu <18 hosts has 127.0.1.1    name instead of 127.0.1.1 name
