@@ -1,3 +1,5 @@
+#!/bin/bash
+
 read -p "Box name: " box_name
 read -p "AD server IP: " ad_ip
 read -p "Team number: " team_num
@@ -6,7 +8,7 @@ hostnamectl set-hostname $box_name.team$team_num.isucdc.com
 # Ubuntu <18 hosts has 127.0.1.1    name instead of 127.0.1.1 name
 sed -i "/$box_name/a $ad_ip ad.team$team_num.isucdc.com ad" /etc/hosts
 apt update
-apt upgrade -y
+apt full-upgrade -y
 apt install -y realmd ntp
 sed -i "/pool 0.ubuntu.pool.ntp.org iburst/i server ad.team$team_num.isucdc.com" /etc/ntp.conf
 realm discover team$team_num.isucdc.com
