@@ -2,26 +2,27 @@
 
 apt update
 apt -y full-upgrade
-apt install nginx
+apt -y install nginx
 
-#ufw allow 'Nginx HTTP'
+ufw allow 'Nginx HTTP'
 
 read -p "Domain: " domain
 read -p "Webserver IP: " web_ip
 
-#Not sure about www.domain for competitions
 echo "server {
     listen 80;
     listen [::]:80;
 
+    # For personal testing can use _, may need modifications for competition environment
     server_name $domain www.$domain;
         
     location / {
-        proxy_pass $web_ip;
+        proxy_pass http://$web_ip;
         include proxy_params;
     }
 }" > /etc/nginx/sites-available/$domain
 
-ln -s /etc/nginx/site-available/$domain /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/$domain /etc/nginx/sites-enabled/
+rm /etc/nginx/sites-enabled/default
 
 systemctl restart nginx
