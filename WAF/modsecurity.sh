@@ -30,7 +30,7 @@ make modules
 sudo cp objs/ngx_http_modsecurity_module.so /usr/share/nginx/modules/
 sudo chmod 644 /usr/share/nginx/modules/ngx_http_modsecurity_module.so
 cd ..
-sudo sed -i '/include \/etc\/nginx\/modules-enabled\/*.conf/a\load_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf
+sudo sed -i '/include \/etc\/nginx\/modules-enabled\/\*.conf/a\load_module modules/ngx_http_modsecurity_module.so;' /etc/nginx/nginx.conf
 
 # Configure ModSecurity
 sudo mkdir /etc/nginx/modsec
