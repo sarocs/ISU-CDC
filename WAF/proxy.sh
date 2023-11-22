@@ -1,8 +1,7 @@
 #!/bin/bash
 
 apt update
-apt -y full-upgrade
-apt -y install nginx
+apt install nginx -y
 
 ufw allow 'Nginx HTTP'
 
