@@ -1,6 +1,7 @@
 #!/bin/bash
 
 read -p "Cores: " cores
+read -p "Domain: " domain
 sudo apt update 
 sudo apt install -y libtool autoconf build-essential libpcre3-dev zlib1g-dev libssl-dev libxml2-dev libgeoip-dev liblmdb-dev libyajl-dev libcurl4-openssl-dev libpcre++-dev pkgconf libxslt1-dev libgd-dev automake
 
@@ -34,6 +35,7 @@ sudo wget -P /etc/nginx/modsec/ https://raw.githubusercontent.com/SpiderLabs/Mod
 sudo mv /etc/nginx/modsec/modsecurity.conf-recommended /etc/nginx/modsec/modsecurity.conf
 sudo cp ModSecurity/unicode.mapping /etc/nginx/modsec
 sudo sed -i 's/SecRuleEngine DetectionOnly/SecRuleEngine On/' /etc/nginx/modsec/modsecurity.conf
+sudo sed -i '/\t}/a\\tmodsecurity on;\n\tmodsecurity_rules_file /etc/nginx/modsec/main.conf;' /etc/nginx/sites-enabled/$domain
 
 # Enable OWASP Rules
 git clone https://github.com/coreruleset/coreruleset.git
