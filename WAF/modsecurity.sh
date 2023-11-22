@@ -2,8 +2,11 @@
 
 read -p "Cores: " cores
 read -p "Domain: " domain
+read -p "Install Directory: " dir
 sudo apt update 
 sudo apt install -y libtool autoconf build-essential libpcre3-dev zlib1g-dev libssl-dev libxml2-dev libgeoip-dev liblmdb-dev libyajl-dev libcurl4-openssl-dev libpcre++-dev pkgconf libxslt1-dev libgd-dev automake
+sudo mkdir -p $dir
+cd $dir
 
 # Build ModSecurity
 git clone --depth 1 -b v3/master --single-branch https://github.com/SpiderLabs/ModSecurity
@@ -22,7 +25,7 @@ nginx_version=$(nginx -v 2>&1 | grep -o '[0-9]\.[0-9]*\.[0-9]*')
 wget http://nginx.org/download/nginx-$nginx_version.tar.gz
 tar xzf nginx-$nginx_version.tar.gz
 cd nginx-$nginx_version
-./configure --with-compat --with-openssl=/usr/include/openssl/ --add-dynamic-module=$(pwd)/ModSecurity-nginx
+./configure --with-compat --with-openssl=/usr/include/openssl/ --add-dynamic-module=$dir/ModSecurity-nginx
 make modules
 sudo cp objs/ngx_http_modsecurity_module.so /usr/share/nginx/modules/
 sudo chmod 644 /usr/share/nginx/modules/ngx_http_modsecurity_module.so
