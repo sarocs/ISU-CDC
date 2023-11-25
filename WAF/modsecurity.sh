@@ -47,4 +47,7 @@ sudo bash -c 'echo "Include /etc/nginx/modsec/modsecurity.conf
 Include $(pwd)/coreruleset/crs-setup.conf
 Include $(pwd)/coreruleset/rules/*.conf" > /etc/nginx/modsec/main.conf'
 
+# Change Security Action to Redirect
+echo -e "SecRuleUpdateActionById 949110 \"t:none,redirect:'%{REQUEST_FILENAME}'\"\nSecRuleUpdateActionById 959100 \"t:none,redirect:'%{REQUEST_FILENAME}'\"" > coreruleset/rules/RESPONSE-999-EXCLUSION-RULES-AFTER-CRS.conf
+
 sudo nginx -s reload
