@@ -9,7 +9,7 @@ sed -i '/<list>etc\/lists\/security-eventchannel<\/list>/ a\ \ \ \ <list>etc/lis
 
 # Customize audit rules
 sed -i 's/<rule id="80705" level="3">/<rule id="80705" level="3" ignore="5">/' /var/ossec/ruleset/rules/0365-auditd_rules.xml
-sed -i 's|</group>||' /var/ossec/ruleset/rules/0365-auditd_rules.xml
+sed -i 's|^</group>||' /var/ossec/ruleset/rules/0365-auditd_rules.xml
 # Append to existing audit rules so they take precedence
 cat ../ISU-CDC-Private/Wazuh/audit_custom.xml >> /var/ossec/ruleset/rules/0365-auditd_rules.xml
 
