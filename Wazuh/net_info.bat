@@ -1,0 +1,2 @@
+@echo off
+powershell.exe -Command "'net_info: ' + ((Get-NetTCPConnection | Where-Object { $_.State -eq 'Listen' } | ForEach-Object { \"`"TCP $($_.LocalAddress):$($_.LocalPort) Process=$((Get-Process -Id $_.OwningProcess).ProcessName)\"`" }) -join '|') + ((Get-NetUDPEndpoint | Where {$_.LocalAddress -eq '0.0.0.0'} | ForEach-Object { \"`"UDP $($_.LocalAddress):$($_.LocalPort) Process=$((Get-Process -Id $_.OwningProcess).ProcessName)\"`" }) -join '|')"

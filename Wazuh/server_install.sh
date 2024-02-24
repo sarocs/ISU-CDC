@@ -27,4 +27,8 @@ fi
 ar_conf=$(cat ../ISU-CDC-Private/Wazuh/ar.conf | sed -z 's/\r\n/\\n/g')
 sed -i "s~    active-response options here~$ar_conf~" /var/ossec/etc/ossec.conf
 
+# Windows decoders
+echo $'<decoder name="tasklist">\n  <prematch>^tasklist: </prematch>\n</decoder>\n' >> /var/ossec/etc/decoders/local_decoder.xml
+echo $'<decoder name="net_info">\n  <prematch>^net_info: </prematch>\n</decoder>\n' >> /var/ossec/etc/decoders/local_decoder.xml
+
 systemctl restart wazuh-manager
