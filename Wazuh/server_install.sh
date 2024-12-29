@@ -3,8 +3,7 @@ read -p "Wazuh version: " version
 read -p "Proxy address: " proxy
 
 curl -sO https://packages.wazuh.com/$version/wazuh-install.sh
-script=$(echo -e "HTTPS_PROXY=$proxy\nNO_PROXY=localhost,127.0.0.1"; cat wazuh-install.sh)
-echo $script > install.sh
+echo -e "HTTPS_PROXY=$proxy\nNO_PROXY=localhost,127.0.0.1" | cat - wazuh-install.sh > install.sh
 bash ./install.sh -a
 
 cp ../ISU-CDC-Private/Wazuh/agent.conf /var/ossec/etc/shared/default
