@@ -1,6 +1,7 @@
-read -p "Do you want to enable Active Response (y/n): " ar
+read -p "Do you want to enable Active Response (y/N): " ar
+read -p "Wazuh version: " version
 
-curl -sO https://packages.wazuh.com/4.7/wazuh-install.sh && bash ./wazuh-install.sh -a
+curl -sO https://packages.wazuh.com/$version/wazuh-install.sh && bash ./wazuh-install.sh -a
 
 cp ../ISU-CDC-Private/Wazuh/agent.conf /var/ossec/etc/shared/default
 cp ../ISU-CDC-Private/Wazuh/*.xml /var/ossec/etc/rules
@@ -11,14 +12,8 @@ sed -i '/<list>etc\/lists\/security-eventchannel<\/list>/ a\ \ \ \ <list>etc/lis
 # Customize audit rules
 sed -i 's/<rule id="80705" level="3">/<rule id="80705" level="3" ignore="5">/' /var/ossec/ruleset/rules/0365-auditd_rules.xml
 
-# Enable vulnerability scanner
-sed -i '/vulnerability-detector/!b;n; s/<enabled>no/<enabled>yes/' /var/ossec/etc/ossec.conf
-# Enable Ubuntu vulnerabilites
-# Other options: debian, redhat, alas, suse, arch, almalinux
-sed -i '/<provider name="canonical">/!b;n; s/<enabled>no/<enabled>yes/' /var/ossec/etc/ossec.conf
-
 # Enable active response
-if [ "$ar" != 'n' ]
+if [ "$ar" = 'y' ]
 then
     sed -i '/<!--/ { h; N; /<active-response>/ D; }' /var/ossec/etc/ossec.conf
     sed -i '/<\/active-response>/ { h; n; g; d; }' /var/ossec/etc/ossec.conf
