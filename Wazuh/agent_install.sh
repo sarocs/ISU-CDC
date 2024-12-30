@@ -10,7 +10,7 @@ then
     apt update
 
     # Install Wazuh agent
-    WAZUH_MANAGER="$ip" apt install wazuh-agent
+    WAZUH_MANAGER="$ip" apt install -y wazuh-agent
 
 
     # Disable Wazuh package repository
@@ -18,30 +18,30 @@ then
     apt update
 
     # Install auditd
-    apt -y install auditd
+    apt install -y auditd
 
 elif [[ -f /etc/redhat-release ]]
 then
     # Add Wazuh package repository
     rpm --import https://packages.wazuh.com/key/GPG-KEY-WAZUH
     cat > /etc/yum.repos.d/wazuh.repo << EOF
-    [wazuh]
-    gpgcheck=1
-    gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH
-    enabled=1
-    name=EL-\$releasever - Wazuh
-    baseurl=https://packages.wazuh.com/4.x/yum/
-    protect=1
+[wazuh]
+gpgcheck=1
+gpgkey=https://packages.wazuh.com/key/GPG-KEY-WAZUH
+enabled=1
+name=EL-\$releasever - Wazuh
+baseurl=https://packages.wazuh.com/4.x/yum/
+protect=1
 EOF
 
     # Install Wazuh agent
-    WAZUH_MANAGER="$ip" yum install wazuh-agent
+    WAZUH_MANAGER="$ip" yum install -y wazuh-agent
 
     # Disable Wazuh package repository
     sed -i "s/^enabled=1/enabled=0/" /etc/yum.repos.d/wazuh.repo
 
     # Install auditd
-    yum -y install auditd
+    yum -y install audit
 fi
 
 systemctl daemon-reload
