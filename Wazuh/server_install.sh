@@ -22,8 +22,10 @@ then
     sed -i '/<\/active-response>/ { h; n; g; d; }' /var/ossec/etc/ossec.conf
 fi
 # Move active response configuration
-ar_conf=$(cat ../ISU-CDC-Private/Wazuh/ar.conf | sed -z 's/\r\n/\\n/g')
-sed -i "s~    active-response options here~$ar_conf~" /var/ossec/etc/ossec.conf
+sed -i "/    active-response options here/{
+    r ../ISU-CDC-Private/Wazuh/ar.conf
+    d
+}" /var/ossec/etc/ossec.conf
 
 # Windows decoders
 echo $'<decoder name="tasklist">\n  <prematch>^tasklist: </prematch>\n</decoder>\n' >> /var/ossec/etc/decoders/local_decoder.xml
