@@ -23,12 +23,12 @@ Invoke-WebRequest https://wazuh.com/resources/blog/detecting-process-injection-w
 & 'C:\Program Files\Sysmon\Sysmon64.exe' -accepteula -i 'C:\Program Files\Sysmon\sysmonconfig.xml'
 
 # Enable remote commands
-Add-Content -Path 'C:\Program Files (x86)\ossec-agent\local_internal_options.conf' -Value 'wazuh_command.remote_commands=1'
+# Add-Content -Path 'C:\Program Files (x86)\ossec-agent\local_internal_options.conf' -Value 'wazuh_command.remote_commands=1'
 # Add-Content -Path 'C:\Program Files (x86)\ossec-agent\local_internal_options.conf' -Value 'logcollector.remote_commands=1'
 
 # Move scripts
-Move-Item -Path .\tasklist.bat -Destination C:\tasklist.bat
-Move-Item -Path .\net_info.bat -Destination C:\net_info.bat
+# Move-Item -Path .\tasklist.bat -Destination C:\tasklist.bat
+# Move-Item -Path .\net_info.bat -Destination C:\net_info.bat
 
 NET START WazuhSvc
 

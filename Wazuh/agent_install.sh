@@ -49,14 +49,14 @@ systemctl enable wazuh-agent
 systemctl start wazuh-agent
 
 # Move FIM script to expected location
-mv register_files.sh /root
-chmod 750 /root/register_files.sh
+# mv register_files.sh /root
+# chmod 750 /root/register_files.sh
 
 # Install auditd rules
 mv ../ISU-CDC-Private/Wazuh/audit.rules /etc/audit/audit.rules
 auditctl -R /etc/audit/audit.rules
 
-sh -c 'echo "wazuh_command.remote_commands=1" >> /var/ossec/etc/local_internal_options.conf'
+# sh -c 'echo "wazuh_command.remote_commands=1" >> /var/ossec/etc/local_internal_options.conf'
 sh -c 'echo "logcollector.remote_commands=1" >> /var/ossec/etc/local_internal_options.conf'
 
 systemctl restart wazuh-agent
