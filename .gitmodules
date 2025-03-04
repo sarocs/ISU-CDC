@@ -1,4 +1,0 @@
-[submodule "ISU-CDC-Private"]
-	path = ISU-CDC-Private
-	url = https://github.com/SaRoCS/ISU-CDC-Private
-	branch = main

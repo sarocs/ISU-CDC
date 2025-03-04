@@ -53,8 +53,8 @@ systemctl start wazuh-agent
 # chmod 750 /root/register_files.sh
 
 # Install auditd rules
-mv ../ISU-CDC-Private/Wazuh/audit.rules /etc/audit/audit.rules
-auditctl -R /etc/audit/audit.rules
+mv config/audit.rules /etc/audit/rules.d/audit.rules
+auditctl -R /etc/audit/rules.d/audit.rules
 
 # sh -c 'echo "wazuh_command.remote_commands=1" >> /var/ossec/etc/local_internal_options.conf'
 sh -c 'echo "logcollector.remote_commands=1" >> /var/ossec/etc/local_internal_options.conf'

@@ -1,0 +1,16 @@
+<group name="syscheck">
+    <rule id="100345" level="0">
+        <if_group>syscheck</if_group>
+        <field name="changed_fields">^mtime$</field>
+        <description>Ignore mtime</description>
+    </rule>
+    <rule id="100002" level="8">
+        <if_sid>550</if_sid>
+        <field name="changed_fields">^permission$</field>
+        <field name="perm" type="pcre2">\w\wx</field>
+        <description>Execute permission added to file.</description>
+        <mitre>
+            <id>T1222.002</id>
+        </mitre>
+    </rule>
+</group>

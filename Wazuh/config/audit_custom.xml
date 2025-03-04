@@ -1,0 +1,379 @@
+<group name="audit_custom,">
+	<rule id="100200" level="0">
+		<if_sid>
+			80700
+		</if_sid>
+		<field name="audit.auid" negate="yes">
+			4294967295
+		</field>
+		<description>
+			Ignore system triggered events
+		</description>
+	</rule>
+	<rule id="100210" level="3" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="self_auditing">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Self auditing event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100211" level="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="kernel">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Kernel event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100212" level="4">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="mount">
+			etc/lists/audit-key-categories
+		</list>
+		<field name="audit.tty" negate="yes">
+			none
+		</field>
+		<description>
+			Audit: Mount event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100213" level="4">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="network_systems">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Network systems event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100214" level="6">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="cron">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Cron event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100215" level="7" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="account_info">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Account info event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100216" level="8">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="sudoers">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Sudoers event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100217" level="4">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="login_config">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Login config event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100218" level="6">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="remote_shell">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Remote shell event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100219" level="4">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="network">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Network event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100220" level="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="init">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Init event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100221" level="3">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="libpath">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Libpath event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100222" level="3">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="systemwide_preloads">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Systemwide preloads event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100223" level="10" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="pam">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: PAM event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100224" level="3">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="mail">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Mail event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100225" level="8">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="ssh">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: SSH event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100226" level="4" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="systemd">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Systemd event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100227" level="6" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="access_control">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Access control event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100228" level="12">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="priv_esc">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Priv_esc event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100229" level="3">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="power">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Power event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100230" level="4">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="session">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Session event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100231" level="7">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="recon">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Recon event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100232" level="8">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="suspicious_activity">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Suspicious activity detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100233" level="3">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="shell">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Shell event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100234" level="8">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="www">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: WWW event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100235" level="8">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="injection">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Injection event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100236" level="3" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="power_abuse">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Power abuse event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100237" level="6" ignore="10">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="software">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Software installation detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100238" level="5" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="string_search">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: String search event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100199" level="0">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="root_command">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Root command
+		</description>
+	</rule>
+	<rule id="100239" level="3">
+		<if_sid>
+			100199
+		</if_sid>
+		<field name="audit.tty" negate="yes">
+			none
+		</field>
+		<description>
+			Audit: Root command detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100240" level="3" ignore="5">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="file">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: File event detected: $(audit.key)
+		</description>
+	</rule>
+	<rule id="100241" level="6">
+		<if_sid>
+			100200
+		</if_sid>
+		<list field="audit.key" lookup="match_key_value" check_value="su">
+			etc/lists/audit-key-categories
+		</list>
+		<description>
+			Audit: Su event detected: $(audit.exe)
+		</description>
+	</rule>
+</group>

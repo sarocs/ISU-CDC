@@ -1,0 +1,46 @@
+<group name="ossec,">
+    <rule id="100040" level="0">
+        <if_sid>530</if_sid>
+        <match>^ossec: output: 'ufw status'</match>
+        <description>Ufw Status</description>
+        <group>firewall_monitor</group>
+    </rule>
+    <rule id="100041" level="8">
+        <if_sid>100040</if_sid>
+        <match>Status: inactive</match>
+        <description>Ufw is inactive.</description>
+        <group>firewall_monitor</group>
+    </rule>
+    <rule id="100042" level="7">
+        <if_sid>100040</if_sid>
+        <match>Status: active</match>
+        <check_diff />
+        <description>Ufw rules changed</description>
+        <group>firewall_monitor</group>
+    </rule>
+
+    <rule id="100050" level="0">
+        <if_sid>530</if_sid>
+        <match>^ossec: output: 'process list'</match>
+        <description>List of running processes.</description>
+        <group>process_monitor</group>
+    </rule>
+    <!--
+    <rule id="100051" level="7" ignore="120">
+        <if_sid>100050</if_sid>
+        <match></match>
+        <description></description>
+        <group>process_monitor</group>
+    </rule>
+    <rule id="100060" level="6">
+        <decoded_as>tasklist</decoded_as>
+        <regex type="pcre2">(?i)notepad.exe</regex>
+        <description>Notepad.exe is running.</description>
+    </rule>
+    -->
+    <rule id="100070" level="7">
+        <decoded_as>net_info</decoded_as>
+        <check_diff />
+        <description>Listening ports changed</description>
+    </rule>
+</group>

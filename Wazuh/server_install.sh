@@ -3,12 +3,14 @@ read -p "Wazuh version: " version
 read -p "Proxy address: " proxy
 
 curl -sO https://packages.wazuh.com/$version/wazuh-install.sh
-echo -e "HTTPS_PROXY=$proxy\nNO_PROXY=localhost,127.0.0.1" | cat - wazuh-install.sh > install.sh
+echo -e "export HTTPS_PROXY=$proxy\nexport NO_PROXY=localhost,127.0.0.1" | cat - wazuh-install.sh > install.sh
 bash ./install.sh -a
 
-cp ../ISU-CDC-Private/Wazuh/agent.conf /var/ossec/etc/shared/default
-cp ../ISU-CDC-Private/Wazuh/*.xml /var/ossec/etc/rules
-cp ../ISU-CDC-Private/Wazuh/audit-key-categories /var/ossec/etc/lists
+cp config/agent.conf /var/ossec/etc/shared/default
+cp config/*.xml /var/ossec/etc/rules
+cp config/audit-key-categories /var/ossec/etc/lists
+chown wazuh:wazuh /var/ossec/etc/lists/audit-key-categories
+chmod 660 /var/ossec/etc/lists/audit-key-categories
 
 sed -i '/<list>etc\/lists\/security-eventchannel<\/list>/ a\ \ \ \ <list>etc/lists/audit-key-categories</list>' /var/ossec/etc/ossec.conf
 
@@ -23,7 +25,7 @@ then
 fi
 # Move active response configuration
 sed -i "/    active-response options here/{
-    r ../ISU-CDC-Private/Wazuh/ar.conf
+    r config/ar.conf
     d
 }" /var/ossec/etc/ossec.conf
 

@@ -1,0 +1,202 @@
+<group name="security_event, windows,">
+  <!-- This rule detects DCSync attacks using windows security event on the domain controller -->
+  <rule id="110001" level="12">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^4662$</field>
+    <field name="win.eventdata.properties" type="pcre2">{1131f6aa-9c07-11d1-f79f-00c04fc2dcd2}|{19195a5b-6da0-11d0-afd3-00c04fd930c9}</field>
+    <options>no_full_log</options>
+    <description>Directory Service Access. Possible DCSync attack</description>
+  </rule>
+ 
+ <!-- This rule ignores Directory Service Access originating from machine accounts containing $ -->
+ <rule id="110009" level="0">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^4662$</field>
+    <field name="win.eventdata.properties" type="pcre2">{1131f6aa-9c07-11d1-f79f-00c04fc2dcd2}|{19195a5b-6da0-11d0-afd3-00c04fd930c9}</field>
+    <field name="win.eventdata.SubjectUserName" type="pcre2">\$$</field>
+    <options>no_full_log</options>
+    <description>Ignore all Directory Service Access that is originated from a machine account containing $</description>
+  </rule>
+ 
+  <!-- This rule detects Keberoasting attacks using windows security event on the domain controller -->
+  <rule id="110002" level="12">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^4769$</field>
+    <field name="win.eventdata.TicketOptions" type="pcre2">0x40810000</field>
+    <field name="win.eventdata.TicketEncryptionType" type="pcre2">0x17</field>
+    <options>no_full_log</options>
+    <description>Possible Keberoasting attack</description>
+  </rule>
+ 
+  <!-- This rule detects Golden Ticket attacks using windows security events on the domain controller -->
+  <rule id="110003" level="12">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^4624$</field>
+    <field name="win.eventdata.LogonGuid" type="pcre2">{00000000-0000-0000-0000-000000000000}</field>
+    <field name="win.eventdata.logonType" type="pcre2">3</field>
+    <options>no_full_log</options>
+    <description>Possible Golden Ticket attack</description>
+  </rule>
+
+    <!-- This rule detects when PsExec is launched remotely to perform lateral movement within the domain. The rule uses Sysmon events collected from the domain controller. -->
+  <rule id="110004" level="12">
+    <if_sid>61600</if_sid>
+    <field name="win.system.eventID" type="pcre2">17|18</field>
+    <field name="win.eventdata.PipeName" type="pcre2">\\PSEXESVC</field>
+    <options>no_full_log</options>
+    <description>PsExec service launched for possible lateral movement within the domain</description>
+  </rule>
+
+  <!-- This rule detects NTDS.dit file extraction using a sysmon event captured on the domain controller -->
+  <rule id="110006" level="12">
+    <if_group>sysmon_event1</if_group>
+    <field name="win.eventdata.commandLine" type="pcre2">NTDSUTIL</field>
+    <description>Possible NTDS.dit file extraction using ntdsutil.exe</description>
+  </rule>
+
+  <!-- This rule detects Pass-the-ash (PtH) attacks using windows security event 4624 on the compromised endpoint -->
+  <rule id="110007" level="12">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID">^4624$</field>
+    <field name="win.eventdata.LogonProcessName" type="pcre2">seclogo</field>
+    <field name="win.eventdata.LogonType" type="pcre2">9</field>
+    <field name="win.eventdata.AuthenticationPackageName" type="pcre2">Negotiate</field>
+    <field name="win.eventdata.LogonGuid" type="pcre2">{00000000-0000-0000-0000-000000000000}</field>
+    <options>no_full_log</options>
+    <description>Possible Pass the hash attack</description>
+  </rule>
+  
+  <!-- This rule detects credential dumping when the command sekurlsa::logonpasswords is run on mimikatz -->
+  <rule id="110008" level="12">
+    <if_sid>61612</if_sid>
+    <field name="win.eventdata.TargetImage" type="pcre2">(?i)\\\\system32\\\\lsass.exe</field>
+    <field name="win.eventdata.GrantedAccess" type="pcre2">(?i)0x1010</field>
+    <description>Possible credential dumping using mimikatz</description>
+  </rule>
+</group>
+
+<group name="Windows,attack,">
+  <!-- Detecting an LSASS memory dumping attack using Rundll32.exe Minidump Function or Comsvcs.dll Exploitation -->
+  <rule id="100010" level="10">
+    <if_sid>61609</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)\\\\rundll32.exe</field>
+    <field name="win.eventdata.imageLoaded" type="pcre2">(?i)[c-z]:\\\\Windows\\\\System32\\\\comsvcs\.dll</field>
+    <description>Possible adversary activity - LSASS memory dump: $(win.eventdata.imageLoaded) loaded by using $(win.eventData.image) on $(win.system.computer).</description>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+  </rule>
+
+  <!-- Detecting an LSASS memory dumping attack using specialized tools -->
+  <rule id="100011" level="10">
+    <if_sid>61613</if_sid>
+    <field name="win.eventData.targetFilename" type="pcre2">(?i)\\\\[^\\]*\.dmp$</field>
+    <field name="win.eventData.image" negate="yes" type="pcre2">(?i)\\\\lsass.*</field>
+    <description>Possible adversary activity - LSASS memory dump: $(win.eventdata.image) created a new file on $(win.system.computer) endpoint.</description>
+    <mitre>
+      <id>T1003.001</id>
+    </mitre>
+  </rule>
+
+  <!-- Detecting a Windows Credential Manager exploitation attack -->
+  <rule id="100012" level="10">
+    <if_sid>61603</if_sid>
+    <field name="win.eventData.Image" type="pcre2">(?i)\\\\rundll32.exe</field>
+    <field name="win.eventData.commandLine" type="pcre2">keymgr.dll,KRShowKeyMgr</field>
+    <description>Possible adversary activity - Credential Manager Access via $(win.eventData.Image) on $(win.system.computer) endpoint.</description>
+    <mitre>
+      <id>T1003</id>
+    </mitre>
+  </rule>
+
+  <!--  Detecting a Windows Credential Manager exploitation attack by VaultCmd process enumeration -->
+  <rule id="100013" level="10">
+    <if_sid>92052</if_sid>
+    <field name="win.eventData.image" type="pcre2">(?i)\\\\vaultcmd.exe</field>
+    <field name="win.eventData.commandLine" type="pcre2">list</field>
+    <description>Possible adversary activity - Attempt to list credentials via $(win.eventData.Image) on $(win.system.computer) endpoint.</description>
+    <mitre>
+      <id>T1003</id>
+    </mitre>
+  </rule>
+
+</group>
+
+<group name="sharphound">
+  <!-- This rule detects the organization name, SpecterOps in the binary.-->
+  <rule id="111151" level="7">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.company" type="pcre2">^SpecterOps$</field>
+    <description>Possible Bloodhound activity: Sharphound binary executed. </description>
+    <mitre>
+      <id>T1033</id>
+    </mitre>
+  </rule>
+  <!-- This rule detects the CollectionMethods flag, sometimes specified when running the executable.-->
+  <rule id="111152" level="12">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.parentImage" type="pcre2">(?i)[c-z]:\\\\Windows\\\\System32\\\\.+\\\\(powershell|cmd)\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)((--CollectionMethods\s)((.+){1,12})|(\s(--Loop)))</field>
+    <description>Possible Bloodhound activity: CollectionMethods flag detected.</description>
+    <mitre>
+      <id>T1059.00</id>
+      <id>T1033</id>
+    </mitre>
+  </rule>  
+  <!-- This rule detects the launch of the SharpHound PowerShell cmdlet.-->
+  <rule id="111153" level="12">
+    <if_sid>61603</if_sid>
+    <field name="win.eventdata.parentImage" type="pcre2">(?i)[c-z]:\\\\Windows\\\\System32\\\\.+\\\\(powershell|cmd)\.exe</field>
+    <field name="win.eventdata.commandLine" type="pcre2">(?i)((invoke-bloodhound\s)|(get-bloodHounddata\s))</field>
+    <description>Possible Bloodhound activity: Sharphound Powershell cmdlet detected. </description>
+    <mitre>
+      <id>T1059.00</id>
+      <id>T1033</id>
+    </mitre>
+  </rule>
+  <!-- This rule detects attempts made by an executable to query LDAP-->
+  <rule id="111154" timeframe="1" level="3">
+    <if_sid>61605</if_sid>
+    <field name="win.eventdata.image" type="pcre2">(?i)^[c-z](([^\\]+?)(.*)(\.exe|ps1)$)</field>
+    <field name="win.eventdata.destinationPort" type="pcre2">^389$</field>
+    <description>LDAP query detected by $(win.eventdata.image) binary on $(name) host.</description>
+    <mitre>
+      <id>T1560</id>
+    </mitre>
+  </rule>
+  <!-- This rule detects the creation of JSON files containing sensitive AD information
+  obtained by the ingestor from the AD-->
+  <rule id="111155" timeframe="2" frequency="2" level="7">
+    <if_sid>61613</if_sid>
+    <field name="win.eventdata.image" type="pcre2">\.exe</field>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)([^\\]+?)(_computers\.json$|_domains\.json$|_ous\.json$|_users\.json$|_groups\.json$|_containers\.json$|_gpos\.json$)</field>
+    <description>Possible Bloodhound activity detected: $(win.eventdata.targetFilename) file created by $(win.eventdata.image).</description>
+    <mitre>
+      <id>T1036</id>
+    </mitre>
+  </rule>
+  <!-- This rule detects the creation of a zip file by an executable binary-->
+  <rule id="111156" level="3">
+    <if_sid>61613</if_sid>
+    <field name="win.eventdata.image" type="pcre2">\.exe</field>
+    <field name="win.eventdata.targetFilename" type="pcre2">(?i)[c-z]:\\.*?([^\\]+\.(zip))$</field>
+    <description>Zip file created: compressed data $(win.eventdata.targetFilename) created by $(win.eventdata.image).</description>
+    <mitre>
+      <id>T1560</id>
+    </mitre>
+  </rule>
+</group>
+
+<group name="nullsession-connection">
+  <!-- This rule detects attempts to enumerate DC through null session connections.-->
+  <rule id="111157" frequency="2" timeframe="3" level="5">
+    <if_sid>60103</if_sid>
+    <field name="win.system.eventID" type="pcre2">^5145$</field>
+    <field name="win.eventdata.relativeTargetName" type="pcre2">^srvsvc|lsarpc|samr$</field>
+    <field name="win.eventdata.subjectUserName" type="pcre2">^(?!.*\$$).*$</field>
+    <description> Possible Network Service enumeration by $(win.eventdata.subjectUserName) targeting $(win.eventdata.relativeTargetName).</description>
+    <mitre>
+      <id>T1087</id>
+    </mitre>
+  </rule>
+</group>
